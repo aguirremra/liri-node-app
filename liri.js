@@ -1,4 +1,5 @@
 //require variables
+var dateformat = require("dateformat");
 var keys = require("./keys.js");
 var twitterPackage = require("twitter");
 var Spotify = require("node-spotify-api");
@@ -7,9 +8,9 @@ var fs = require("fs");
 var arg1 = process.argv[2];
 var arg2 = process.argv[3];
 
-getarg1(arg1);
+getarg1(arg1, arg2);
 
-function getarg1(arg1){
+function getarg1(arg1, arg2){
 	switch (arg1){
 		case "my-tweets":
 			myTweets(arg2);
@@ -24,7 +25,7 @@ function getarg1(arg1){
 			doWhatItSays();
 			break;
 		default:
-			log("Enter a command: <my-tweets> <spotify-this-song> <movie-this> <do-what-it-says>");
+			log("Enter one of these commands: <my-tweets> <spotify-this-song> <movie-this> <do-what-it-says>");
 	}	
 }
 
@@ -50,7 +51,8 @@ function myTweets(arg2){
 	  //get tweets from response
 	  log("---------------Tweets------------------------")
 	  for (var i = 0; i < tweets.length; i++) {	  	
-	  	log(tweets[i].created_at + " - " + tweets[i].text);
+	  	log(dateformat(tweets[i].created_at, "mm/dd/yy h:MM:ss TT Z") + " - " + tweets[i].text);
+
 	  }
 	});
 }
@@ -105,8 +107,9 @@ function doWhatItSays(){
 	  if (err){
 	  	log(err);
 	  }
-	  var randArray = data.split(",");
-	  spotifyThisSong(randArray[1]);
+	  var randArray = data.split(",");	  
+	  arg2 = randArray[1];
+	  getarg1(randArray[0], randArray[1]);
 	});
 }
 
